@@ -2,14 +2,21 @@ import queue
 import copy
 from telnetlib import SE
 import time
-import random
 
 class node:
     #Class to keep the state of a node in the search queue
 
-    def __init__(self,state,depth) -> None:
+    def __init__(self,state,depth,distance) -> None:
         self.state = copy.deepcopy(state)
         self.depth = depth
+        self.distance = distance
+
+    def __lt__(self, other):
+        return self.distance < other.distance
+
+    def __gt__(self,other):
+        return self.distance > other.distance
+
 
 class problem:
     #Abstract class
@@ -56,13 +63,13 @@ def h(state, h_n: bool):
 
 #Initializes a que with a single node
 def make_que(node: node) -> queue.Queue:
-    Que = queue.Queue()
+    Que = queue.PriorityQueue()
     Que.put(node)
     return Que
 
 #Creates a que node for the given state
-def make_node(state,depth) -> node:
-    return node(state,depth)
+def make_node(state,depth,distance) -> node:
+    return node(state,depth,distance)
 
 #I wasn't sure how to take an operator as an argument so I just made expand fit the square problem
 def expand(node: node):
@@ -98,24 +105,37 @@ def expand(node: node):
                     children.append(state4)
                 return children
 
-#helper function
-def check_subset(visited_nodes, state):
-    return visited_nodes.__contains__(state)
-    
 #Que's the children passed in to the que
-def queing_function(nodes: queue.Queue,children,depth,visited_nodes) -> queue.Queue:
-    random.shuffle(children)
+def queing_function_uniform(nodes: queue.PriorityQueue,children,depth,visited_nodes) -> queue.PriorityQueue:
     for child in children:
         tuple_state = tuple(map(tuple,child))
-        if not check_subset(visited_nodes,tuple_state):
-            new_node = node(child,depth+1)
+        if not visited_nodes.__contains__(tuple_state):
+            new_node = node(child,depth+1,depth+1)
+            nodes.put(new_node)
+            visited_nodes.add(tuple_state)
+    return nodes
+
+def queing_function_manhattan(nodes: queue.PriorityQueue,children,depth,visited_nodes) -> queue.PriorityQueue:
+    for child in children:
+        tuple_state = tuple(map(tuple,child))
+        if not visited_nodes.__contains__(tuple_state):
+            new_node = node(child,depth+1,depth+1 + h(child,True))
+            nodes.put(new_node)
+            visited_nodes.add(tuple_state)
+    return nodes
+
+def queing_function_missing_squares(nodes: queue.PriorityQueue,children,depth,visited_nodes) -> queue.PriorityQueue:
+    for child in children:
+        tuple_state = tuple(map(tuple,child))
+        if not visited_nodes.__contains__(tuple_state):
+            new_node = node(child,depth+1,depth+1 + h(child,False))
             nodes.put(new_node)
             visited_nodes.add(tuple_state)
     return nodes
 
 #Our main search; que's based on the passed in queing function
 def search(problem,queing_function):
-    nodes = make_que(make_node(problem.init_state,0))
+    nodes = make_que(make_node(problem.init_state,0,0))
     i = 0
     max_que = 0
     visited_nodes = {tuple(map(tuple,problem.init_state))}
@@ -124,26 +144,29 @@ def search(problem,queing_function):
         max_que = max(max_que,nodes.qsize())
         node = nodes.get()
         if problem.goal_test(node.state):
-            print(f" Solution found \n Depth: {node.depth} \n Max queue size: {max_que} \n Nodes expanded: {i}")
-            return node
+            return (node,node.depth,max_que,i)
         nodes = queing_function(nodes,expand(node),node.depth,visited_nodes)
     return "Failure"
 
 
+def Test(test_state,goal_state,queing_function,precision):
+    Problem = eight_tile(test_state,goal_state)
+    time1 = time.time()
+    results = search(Problem,queing_function)
+    time2 = time.time()
+    total_time = ((time2 - time1)*precision//1)/precision
+    return (["Solution Found","\nTime elapsed(s): ",total_time,"\nDepth: ",results[1],"\nMax Queue Size: ",results[2],"\nNodes Expanded: ",results[3]],[total_time,results[1],results[2],results[3]])
+
+
 #Main Code
 goal_state = [[1,2,3],[4,5,6],[7,8,9]]
-test1 = [[2,3,4],[5,6,7],[8,9,1]]
-test2 = [[16,2,3,4],[5,6,7,8],[9,10,11,12],[13,1,15,14]]
-test3 = [[1,2,4],[3,9,6],[7,8,5]]
-test4 = [[8,2,3],[4,5,6],[7,1,9]]
 test5 = [[1,3,6],[5,9,2],[4,7,8]]
 test6 = [[4,1,2],[5,3,9],[7,8,6]]
+test7 = [[9,7,2],[4,6,1],[3,5,8]]
 
-
-Problem = eight_tile(test6,goal_state)
-time1 = time.time()
-search(Problem,queing_function)
-time2 = time.time()
-precision = 100
-total_time = ((time2 - time1)*precision//1)/precision
-print(f" Search took {total_time} seconds")
+results_uniform = Test(test7,goal_state,queing_function_uniform,1000)
+results_missing = Test(test7,goal_state,queing_function_missing_squares,1000)
+results_manhattan = Test(test7,goal_state,queing_function_manhattan,1000)
+print(*results_uniform[0])
+print(*results_missing[0])
+print(*results_manhattan[0])
