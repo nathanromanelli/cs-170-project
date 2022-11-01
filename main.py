@@ -1,18 +1,34 @@
+import queue
+
 class node:
-    pass
+    def __init__(self,state) -> None:
+        self.state = state
 
-def missing_heuristic(state):
-    dist = 0
-    for i in range(len(state)):
-        for j in range(len(state[i])):
-            if (state[i][j] != len(state[i])*i + j + 1):
-                
-                dist = dist + 1
-    return dist
+class problem:
+    def __init__(self, init_state, goal_state) -> None:
+        self.init_state = init_state
+        self.goal_state = goal_state
+    
+    def goal_test(state):
+        pass
 
-def manhat_heuristic(state, h_n):
+class eight_tile(problem):
+    def __init__(self, init_state, goal_state) -> None:
+        super().__init__(init_state, goal_state)
+
+    def goal_test(self,state):
+        dim = len(state)
+        for i in range(dim):
+            for j in range(dim):
+                if state[i][j] != self.goal_state[i][j]:
+                    return False
+        return True
+        
+
+def h(state, h_n: bool):
+    #If h_n = False we are using missing tiles
     dist = 0
-    dimension = len(state[0])
+    dimension = len(state)
     for i in range(dimension):
         for j in range(dimension):
             if (state[i][j] != dimension*i + j + 1):
@@ -20,7 +36,7 @@ def manhat_heuristic(state, h_n):
                 # Adding g(n)
                 # dist = dist + 1
                 
-                # if we're using manhattan, h_n is True, else we just use missing squares
+                # if we're using manhattan, h_n is True
                 # we don't care about the distance of the empty tile
                 if (state[i][j] != pow(dimension,2) and h_n) : 
                     goal_j = (state[i][j] - 1) % dimension # f(x,y) % dim = x 
@@ -30,36 +46,37 @@ def manhat_heuristic(state, h_n):
                     dist = dist + abs(i - goal_i) + abs(j - goal_j)
     return dist
 
+def make_que(node: node) -> queue.Queue:
+    Que = queue.Queue()
+    Que.put(node)
+    return Que
 
-def make_que(node):
-    pass
+def make_node(state) -> node:
+    return node(state)
 
-def make_node(problem,initial_state):
-    pass
-
-def astar_search(problem,queing_function):
-    nodes = make_que(make_node(problem,initial_state))
-    while 1:
-        if nodes.empty():
-            return "failure"
-        node = nodes.remove_front()
+def search(problem,queing_function):
+    nodes = make_que(make_node(problem.init_state))
+    while not nodes.empty():
+        node = nodes.get()
         if problem.goal_test(node.state()):
             return node
         nodes = queing_function(nodes,expand(node,problem.operator()))
-        #end while
+    return "Failure"
 
 
+
+#Main Code
 goal_state = [[1,2,3],[4,5,6],[7,8,9]]
 test1 = [[2,3,4],[5,6,7],[8,9,1]]
 test2 = [[16,2,3,4],[5,6,7,8],[9,10,11,12],[13,1,15,14]]
 test3 = [[1,2,4],[3,9,6],[7,8,5]]
 test4 = [[8,2,3],[4,5,6],[7,1,9]]
 
-print(manhat_heuristic(test1,h_n=True))
-print(manhat_heuristic(test2,h_n=True))
-print(manhat_heuristic(test3,h_n=True))
-print(manhat_heuristic(test4,h_n=True))
-print(manhat_heuristic(goal_state,h_n=True))
+print(h(test1,h_n=True))
+print(h(test2,h_n=True))
+print(h(test3,h_n=True))
+print(h(test4,h_n=True))
+print(h(goal_state,h_n=True))
 
 #n = input("Puzzle dimension: ")
 
@@ -71,3 +88,6 @@ for i in range(4):
         temp.append((some-1)%4)
     print(temp)
     temp = []
+
+que = queue.Queue()
+print(que.empty())
