@@ -1,9 +1,6 @@
-from cProfile import label
 import queue
 import copy
-from telnetlib import SE
 import time
-from tokenize import Name
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -26,7 +23,10 @@ class node:
         self.distance = distance
 
     def __lt__(self, other):
-        return (self.distance + self.depth) < (other.distance + other.depth)
+        if (self.distance + self.depth == other.distance + other.depth):
+            return self.depth < other.depth
+        else:
+            return (self.distance + self.depth) < (other.distance + other.depth)
 
     def __gt__(self,other):
         return (self.distance + self.depth) > (other.distance + other.depth)
@@ -70,7 +70,7 @@ can be swapped with the 0 tile, and if its legal it preforms the move in a new s
     input: node
     output: list of child states
 
-For the queing functions, I use a priority que and compare g(n) + f(n) when adding a new node to the queue
+For the queing functions, I use a priority que and compare g(n) + h(n) when adding a new node to the queue
 queing_function_uniform() - Adds children from expand() into the priority que with the nodes distance using uniform distance
 queing_function_missing() - Ques using missing square distance
 queing_function_manhattan() - Ques using manhattan distance
@@ -154,7 +154,7 @@ def queing_function_uniform(nodes: queue.PriorityQueue,children,depth: int,visit
             nodes.put(new_node)
             visited_nodes.add(tuple_state)
     if trace:
-        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and f(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}\n")
+        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and h(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}\n")
     return nodes
 
 def queing_function_manhattan(nodes: queue.PriorityQueue,children,depth: int, visited_nodes: set, trace) -> queue.PriorityQueue:
@@ -165,7 +165,7 @@ def queing_function_manhattan(nodes: queue.PriorityQueue,children,depth: int, vi
             nodes.put(new_node)
             visited_nodes.add(tuple_state)
     if trace:
-        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and f(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}\n")
+        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and h(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}\n")
     return nodes
 
 def queing_function_missing_squares(nodes: queue.PriorityQueue,children,depth: int, visited_nodes: set, trace) -> queue.PriorityQueue:
@@ -176,7 +176,7 @@ def queing_function_missing_squares(nodes: queue.PriorityQueue,children,depth: i
             nodes.put(new_node)
             visited_nodes.add(tuple_state)
     if trace:
-        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and f(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}\n")
+        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and h(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}\n")
     return nodes
 
 #Our main search; que's based on the passed in queing function
