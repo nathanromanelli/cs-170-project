@@ -266,6 +266,7 @@ print("Welcome to my 8-puzzle solver")
 
 if input("Would you like to run custom puzzle tests? (Y/N) ").lower() == "y":
     dimension = input(f"Please enter the dimension of the puzzle: ")
+    print("Please enter the values of the puzzle where the empty square is represented by a 9 or a zero")
     testn = get_array(dimension)
     if input("Custom goal state? (Y/N) ").lower() == "y":
         goal = get_array(dimension)

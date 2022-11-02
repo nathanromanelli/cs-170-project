@@ -1,0 +1,46 @@
+Welcome to my 8-puzzle solver
+Would you like to run custom puzzle tests? (Y/N) Y
+Please enter the dimension of the puzzle: 3
+Please enter the values of the puzzle where the empty square is represented by a 9 or a zero
+Please enter 3 values for row 1 seperated by spaces: 1 3 6
+Please enter 3 values for row 2 seperated by spaces: 5 0 2
+Please enter 3 values for row 3 seperated by spaces: 4 7 8
+Custom goal state? (Y/N) N
+Select the algorithm to run. Input (1) Uniform Cost Search, (2) Misplaced Tile Heuristic, (3) Manhattan Distance Heuristic: 2
+The best state to expand with g(n) = 1 and h(n) = 6 is
+ [[1 3 6]
+ [9 5 2]
+ [4 7 8]]
+
+The best state to expand with g(n) = 2 and h(n) = 5 is
+ [[1 3 6]
+ [4 5 2]
+ [9 7 8]]
+
+The best state to expand with g(n) = 3 and h(n) = 4 is
+ [[1 3 6]
+ [4 5 2]
+ [7 9 8]]
+
+. . . 12 states omitted
+
+The best state to expand with g(n) = 7 and h(n) = 1 is
+ [[1 9 3]
+ [4 5 6]
+ [7 8 2]]
+
+The best state to expand with g(n) = 7 and h(n) = 1 is
+ [[1 2 3]
+ [4 5 6]
+ [7 9 8]]
+
+The best state to expand with g(n) = 8 and h(n) = 0 is
+ [[1 2 3]
+ [4 5 6]
+ [7 8 9]]
+
+Solution Found
+Time elapsed(s):  0.004
+Depth:  8
+Max Queue Size:  16
+Nodes Expanded:  19

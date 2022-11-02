@@ -1,0 +1,59 @@
+Welcome to my 8-puzzle solver
+Would you like to run custom puzzle tests? (Y/N) Y
+Please enter the dimension of the puzzle: 4
+Please enter the values of the puzzle where the empty square is represented by a 9 or a zero
+Please enter 4 values for row 1 seperated by spaces: 5 10 1 4
+Please enter 4 values for row 2 seperated by spaces: 6 14 3 8
+Please enter 4 values for row 3 seperated by spaces: 16 9 13 12
+Please enter 4 values for row 4 seperated by spaces: 11 7 2 15
+Custom goal state? (Y/N) N
+Select the algorithm to run. Input (1) Uniform Cost Search, (2) Misplaced Tile Heuristic, (3) Manhattan Distance Heuristic: 3
+The best state to expand with g(n) = 1 and h(n) = 23 is
+ [[ 5 10  1  4]
+ [ 6 14  3  8]
+ [11  9 13 12]
+ [16  7  2 15]]
+
+The best state to expand with g(n) = 1 and h(n) = 23 is
+ [[ 5 10  1  4]
+ [ 6 14  3  8]
+ [ 9 16 13 12]
+ [11  7  2 15]]
+
+The best state to expand with g(n) = 2 and h(n) = 22 is
+ [[ 5 10  1  4]
+ [ 6 16  3  8]
+ [ 9 14 13 12]
+ [11  7  2 15]]
+
+The best state to expand with g(n) = 2 and h(n) = 24 is
+ [[ 5 10  1  4]
+ [ 6 14  3  8]
+ [11  9 13 12]
+ [ 7 16  2 15]]
+
+. . . Many pages of states are omitted
+
+The best state to expand with g(n) = 30 and h(n) = 2 is
+ [[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 16 12]
+ [13 14 11 15]]
+
+The best state to expand with g(n) = 31 and h(n) = 1 is
+ [[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]
+ [13 14 16 15]]
+
+The best state to expand with g(n) = 32 and h(n) = 0 is
+ [[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]
+ [13 14 15 16]]
+
+Solution Found
+Time elapsed(s):  0.717
+Depth:  32
+Max Queue Size:  10702
+Nodes Expanded:  11278
