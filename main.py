@@ -221,10 +221,9 @@ def test_three_algorithms(test,goal):
     results_manhattan = Test(test,goal,queing_function_manhattan,1000)
     results_both = Test(test,goal,queing_function_both,1000)
 
-    print(*results_uniform[0])
-    print(*results_missing[0])
-    print(*results_manhattan[0])
-    print(*results_both[0])
+    print("\nUniform cost: \n",*results_uniform[0],"\n")
+    print("A* missing squares: \n",*results_missing[0],"\n")
+    print("A* manhattan: \n",*results_manhattan[0],"\n")
     
     return ((results_uniform[1],results_missing[1],results_manhattan[1]))
 
@@ -265,18 +264,19 @@ test7 = [[9,7,2],[4,6,1],[3,5,8]]
 
 #Input of custom test
 print("This program has no input validation")
-if 0: #input("Would you like to run custom puzzle tests? (Y/N) ").lower() == "y":
+if input("Would you like to run custom puzzle tests? (Y/N) ").lower() == "y":
     testn = get_array()
     if input("Custom goal state? (Y/N) ").lower() == "y":
         goal = get_array()
     else:
         goal = generate_goal(len(testn))
     test_three_algorithms(testn,goal)
+    quit()
 else:
     test_arr = [test0,test1,test2,test3,test4,test5,test6,test7]
     goal = goal_state
 
-
+#Default testing
 tests = [0,2,4,8,12,16,20,24]
 nodes_expanded = []
 time_elapsed = []
