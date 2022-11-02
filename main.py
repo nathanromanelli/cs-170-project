@@ -3,6 +3,7 @@ import copy
 from telnetlib import SE
 import time
 from tokenize import Name
+import matplotlib.pyplot as plt
 
 """
 Classes:
@@ -260,7 +261,7 @@ test5 = [[1,6,7],[5,9,3],[4,8,2]]
 test6 = [[7,1,2],[4,8,5],[6,3,9]]
 test7 = [[9,7,2],[4,6,1],[3,5,8]]
 
-print("This program has no input validation so please do not break it")
+print("This program has no input validation")
 if input("Would you like to run custom puzzle tests? (Y/N) ").lower() == "y":
     testn = get_array()
     if input("Custom goal state? (Y/N) ").lower() == "y":
