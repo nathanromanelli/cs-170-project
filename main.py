@@ -2,11 +2,22 @@ import queue
 import copy
 from telnetlib import SE
 import time
+from tokenize import Name
 
+"""
+Classes:
+
+    Node - Class to keep the state of a node in the search que, can be compared to each other by distance
+
+    Problem - Class to store the initial and goal state of a given problem
+
+    eight_tile - Child class of problem with member function goal_test() to check if a given state is the goal state
+
+"""
 class node:
     #Class to keep the state of a node in the search queue
 
-    def __init__(self,state,depth,distance) -> None:
+    def __init__(self, state, depth: int, distance: int) -> None:
         self.state = copy.deepcopy(state)
         self.depth = depth
         self.distance = distance
@@ -17,7 +28,6 @@ class node:
     def __gt__(self,other):
         return self.distance > other.distance
 
-
 class problem:
     #Abstract class
 
@@ -26,41 +36,47 @@ class problem:
         self.goal_state = copy.deepcopy(goal_state)
     
 class eight_tile(problem):
-    #Class to keep initial and goal state for the problem space
+    #Class to keep initial and goal state for the 8 tile problem
 
     def __init__(self, init_state, goal_state) -> None:
         super().__init__(init_state, goal_state)
 
     #Function to check if the current state is the goal state
-    def goal_test(self,state):
+    def goal_test(self, state):
         dim = len(state)
         for i in range(dim):
             for j in range(dim):
                 if state[i][j] != self.goal_state[i][j]:
                     return False
         return True
-    
-def h(state, h_n: bool):
-    #If h_n = False we are using missing tiles
-    dist = 0
-    dimension = len(state)
-    for i in range(dimension):
-        for j in range(dimension):
-            # f(x,y) = dim * y + x, in the given example dimension = 3
-            if (state[i][j] != dimension*i + j + 1):
-                # Adding g(n)
-                dist = dist + 1
-                
-                # if we're using manhattan, h_n is True
-                # we don't care about the distance of the empty tile
-                if (state[i][j] != pow(dimension,2) and h_n) : 
-                    goal_j = (state[i][j] - 1) % dimension # f(x,y) % dim = x 
-                    goal_i = (state[i][j] - 1) // dimension # floor[f(x,y) / dim] = y
 
-                    # Adding h(n) and not counting blank square, which im leaving as 9 for simplicity
-                    dist = dist + abs(i - goal_i) + abs(j - goal_j)
-    return dist
 
+"""
+Driver Functions:
+
+make_que() - Function that initializes a priority que given a node
+
+make_node() - Function that creates a node given a state (in our case, a 2d array)
+
+heuristic() - Heuristic function, receives state and a boolean which determines if we will use manhattan distance or simply missing square
+    input: state, h_n
+    output: heuristic evaluation of state
+
+expand() - Function which expands the children of a given state. The function checks if any of the 4 squares surrounding the 0 tile
+can be swapped with the 0 tile, and if its legal it preforms the move in a new state
+    input: node
+    output: list of child states
+
+queing_function_uniform() - Adds children from expand() into the priority que with the nodes distance using uniform distance
+queing_function_missing() - Ques using missing square distance
+queing_function_manhattan() - Ques using manhattan distance
+    input: node priority que, children from expand(), depth of nodes to que, set of visited nodes
+    output: node priority que with children qued
+
+search() - Generic searching function, terminates when goal is found or throws exception if the search fails
+    input: problem, queing function
+    output: the solution node, search statistics
+"""
 #Initializes a que with a single node
 def make_que(node: node) -> queue.Queue:
     Que = queue.PriorityQueue()
@@ -68,8 +84,28 @@ def make_que(node: node) -> queue.Queue:
     return Que
 
 #Creates a que node for the given state
-def make_node(state,depth,distance) -> node:
+def make_node(state, depth: int, distance: int) -> node:
     return node(state,depth,distance)
+
+def heuristic(state, use_missing: bool, use_manhattan: bool) -> int:
+    #If h_n = False we are using missing tiles
+    dist = 0
+    dimension = len(state)
+    for i in range(dimension):
+        for j in range(dimension):
+            # f(x,y) = dim * y + x, in the given example dimension = 3
+            if (state[i][j] != dimension*i + j + 1):
+                if (use_missing):
+                    dist = dist + 1
+
+                # we don't care about the distance of the empty tile so we exclude it
+                if (state[i][j] != pow(dimension,2) and use_manhattan): 
+                    goal_j = (state[i][j] - 1) % dimension # f(x,y) % dim = x 
+                    goal_i = (state[i][j] - 1) // dimension # floor[f(x,y) / dim] = y
+
+                    # Adding h(n) and not counting blank square, which im leaving as 9 for simplicity
+                    dist = dist + abs(i - goal_i) + abs(j - goal_j)
+    return dist
 
 #I wasn't sure how to take an operator as an argument so I just made expand fit the square problem
 def expand(node: node):
@@ -106,7 +142,7 @@ def expand(node: node):
                 return children
 
 #Que's the children passed in to the que
-def queing_function_uniform(nodes: queue.PriorityQueue,children,depth,visited_nodes) -> queue.PriorityQueue:
+def queing_function_uniform(nodes: queue.PriorityQueue,children,depth: int,visited_nodes: set) -> queue.PriorityQueue:
     for child in children:
         tuple_state = tuple(map(tuple,child))
         if not visited_nodes.__contains__(tuple_state):
@@ -115,20 +151,29 @@ def queing_function_uniform(nodes: queue.PriorityQueue,children,depth,visited_no
             visited_nodes.add(tuple_state)
     return nodes
 
-def queing_function_manhattan(nodes: queue.PriorityQueue,children,depth,visited_nodes) -> queue.PriorityQueue:
+def queing_function_manhattan(nodes: queue.PriorityQueue,children,depth: int, visited_nodes: set) -> queue.PriorityQueue:
     for child in children:
         tuple_state = tuple(map(tuple,child))
         if not visited_nodes.__contains__(tuple_state):
-            new_node = node(child,depth+1,depth+1 + h(child,True))
+            new_node = node(child,depth+1,depth+1 + heuristic(child,False,True))
             nodes.put(new_node)
             visited_nodes.add(tuple_state)
     return nodes
 
-def queing_function_missing_squares(nodes: queue.PriorityQueue,children,depth,visited_nodes) -> queue.PriorityQueue:
+def queing_function_missing_squares(nodes: queue.PriorityQueue,children,depth: int, visited_nodes: set) -> queue.PriorityQueue:
     for child in children:
         tuple_state = tuple(map(tuple,child))
         if not visited_nodes.__contains__(tuple_state):
-            new_node = node(child,depth+1,depth+1 + h(child,False))
+            new_node = node(child,depth+1,depth+1 + heuristic(child,True,False))
+            nodes.put(new_node)
+            visited_nodes.add(tuple_state)
+    return nodes
+
+def queing_function_both(nodes: queue.PriorityQueue,children,depth: int, visited_nodes: set) -> queue.PriorityQueue:
+    for child in children:
+        tuple_state = tuple(map(tuple,child))
+        if not visited_nodes.__contains__(tuple_state):
+            new_node = node(child,depth+1,depth+1 + heuristic(child,True,True))
             nodes.put(new_node)
             visited_nodes.add(tuple_state)
     return nodes
@@ -145,28 +190,85 @@ def search(problem,queing_function):
         node = nodes.get()
         if problem.goal_test(node.state):
             return (node,node.depth,max_que,i)
-        nodes = queing_function(nodes,expand(node),node.depth,visited_nodes)
-    return "Failure"
+        nodes = queing_function(nodes,expand(node),node.depth, visited_nodes)
+    raise Exception("Search terminated in failure")
 
 
+"""
+Functions for testing algorithms and comparing performance
+"""
 def Test(test_state,goal_state,queing_function,precision):
+    #Receives test state, searches for goal, returns statistics
+
     Problem = eight_tile(test_state,goal_state)
     time1 = time.time()
-    results = search(Problem,queing_function)
+    try:
+        results = search(Problem,queing_function)
+    except Exception as e:
+        print(e)
     time2 = time.time()
     total_time = ((time2 - time1)*precision//1)/precision
     return (["Solution Found","\nTime elapsed(s): ",total_time,"\nDepth: ",results[1],"\nMax Queue Size: ",results[2],"\nNodes Expanded: ",results[3]],[total_time,results[1],results[2],results[3]])
 
+def test_three_algorithms(test,goal):
+    #Runs Test() on uniform cost search, A* with missing square heuristic, and A* with manhattan distance
+
+    results_uniform = Test(test,goal,queing_function_uniform,1000)
+    results_missing = Test(test,goal,queing_function_missing_squares,1000)
+    results_manhattan = Test(test,goal,queing_function_manhattan,1000)
+    results_both = Test(test,goal,queing_function_both,1000)
+
+    print(*results_uniform[0])
+    print(*results_missing[0])
+    print(*results_manhattan[0])
+    print(*results_both[0])
+    
+    return (results_uniform[1],results_missing[1],results_manhattan[1])
+
+def get_array():
+    #Gets a test from the user
+
+    testn = []
+    dimension = input("Please enter the dimension of the puzzle: ")
+    for i in range(int(dimension)):
+        print(f"Please enter {dimension} values for row {i+1} seperated by spaces: ")
+        temp = [int(i) for i in input().split()]
+        testn.append(temp)
+    for i in range(len(testn)):
+        for j in range(len(testn)):
+            if testn[i][j] == 0:
+                testn[i][j] = pow(int(dimension),2)
+    return testn
+
+def generate_goal(dim):
+    goal = []
+    for i in range(dim):
+        temp = []
+        for j in range(dim):
+            temp.append(dim*i+j+1)
+        goal.append(temp)
+    return goal
 
 #Main Code
 goal_state = [[1,2,3],[4,5,6],[7,8,9]]
-test5 = [[1,3,6],[5,9,2],[4,7,8]]
-test6 = [[4,1,2],[5,3,9],[7,8,6]]
+test0 = [[1,2,3],[4,5,6],[7,8,9]]
+test1 = [[1,2,3],[4,5,6],[9,7,8]]
+test2 = [[1,2,3],[5,9,6],[4,7,8]]
+test3 = [[1,3,6],[5,9,2],[4,7,8]]
+test4 = [[1,3,6],[5,9,7],[4,8,2]]
+test5 = [[1,6,7],[5,9,3],[4,8,2]]
+test6 = [[7,1,2],[4,8,5],[6,3,9]]
 test7 = [[9,7,2],[4,6,1],[3,5,8]]
 
-results_uniform = Test(test7,goal_state,queing_function_uniform,1000)
-results_missing = Test(test7,goal_state,queing_function_missing_squares,1000)
-results_manhattan = Test(test7,goal_state,queing_function_manhattan,1000)
-print(*results_uniform[0])
-print(*results_missing[0])
-print(*results_manhattan[0])
+print("This program has no input validation so please do not break it")
+if input("Would you like to run custom puzzle tests? (Y/N) ").lower() == "y":
+    testn = get_array()
+    if input("Custom goal state? (Y/N) ").lower() == "y":
+        goaln = get_array()
+    else:
+        goaln = generate_goal(len(testn))
+else:
+    testn = test7
+    goaln = goal_state
+
+test_three_algorithms(testn,goaln)
