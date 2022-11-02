@@ -251,7 +251,11 @@ def generate_goal(dim):
         goal.append(temp)
     return goal
 
-#Main Code
+"""
+Main code- If the user inputs a custom test the program will run it and terminate, otherwise it runs the 8 default tests
+and plots the results
+"""
+
 goal_state = [[1,2,3],[4,5,6],[7,8,9]]
 test0 = [[1,2,3],[4,5,6],[7,8,9]]
 test1 = [[1,2,3],[4,5,6],[9,7,8]]
@@ -287,11 +291,12 @@ for test in test_arr:
     time_elapsed.append([results[0][0],results[1][0],results[2][0]])
     max_queue.append([results[0][2],results[1][2],results[2][2]])
 
-data = np.array(nodes_expanded)
-
+#Plotting results of test
 fig, (ax1,ax2) = plt.subplots(2)
 fig.tight_layout(pad = 2)
 fig.suptitle("Performance of Algorithms vs Problem Depth")
+
+data = np.array(nodes_expanded)
 ax1.plot(tests,data[:,0],label = "Uniform Cost Search")
 ax1.plot(tests,data[:,1],label = "A* Missing Tiles Heuristic")
 ax1.plot(tests,data[:,2],label = "A* Manhattan Distance")
