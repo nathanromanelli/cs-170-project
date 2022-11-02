@@ -154,7 +154,7 @@ def queing_function_uniform(nodes: queue.PriorityQueue,children,depth: int,visit
             nodes.put(new_node)
             visited_nodes.add(tuple_state)
     if trace:
-        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and f(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}")
+        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and f(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}\n")
     return nodes
 
 def queing_function_manhattan(nodes: queue.PriorityQueue,children,depth: int, visited_nodes: set, trace) -> queue.PriorityQueue:
@@ -165,7 +165,7 @@ def queing_function_manhattan(nodes: queue.PriorityQueue,children,depth: int, vi
             nodes.put(new_node)
             visited_nodes.add(tuple_state)
     if trace:
-        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and f(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}")
+        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and f(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}\n")
     return nodes
 
 def queing_function_missing_squares(nodes: queue.PriorityQueue,children,depth: int, visited_nodes: set, trace) -> queue.PriorityQueue:
@@ -176,7 +176,7 @@ def queing_function_missing_squares(nodes: queue.PriorityQueue,children,depth: i
             nodes.put(new_node)
             visited_nodes.add(tuple_state)
     if trace:
-        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and f(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}")
+        print(f"The best state to expand with g(n) = {nodes.queue[0].depth} and f(n) = {nodes.queue[0].distance} is \n {np.matrix(nodes.queue[0].state)}\n")
     return nodes
 
 #Our main search; que's based on the passed in queing function
