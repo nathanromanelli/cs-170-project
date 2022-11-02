@@ -1,9 +1,11 @@
+from cProfile import label
 import queue
 import copy
 from telnetlib import SE
 import time
 from tokenize import Name
 import matplotlib.pyplot as plt
+import numpy as np
 
 """
 Classes:
@@ -209,7 +211,7 @@ def Test(test_state,goal_state,queing_function,precision):
         print(e)
     time2 = time.time()
     total_time = ((time2 - time1)*precision//1)/precision
-    return (["Solution Found","\nTime elapsed(s): ",total_time,"\nDepth: ",results[1],"\nMax Queue Size: ",results[2],"\nNodes Expanded: ",results[3]],[total_time,results[1],results[2],results[3]])
+    return ((["Solution Found","\nTime elapsed(s): ",total_time,"\nDepth: ",results[1],"\nMax Queue Size: ",results[2],"\nNodes Expanded: ",results[3]],[total_time,results[1],results[2],results[3]]))
 
 def test_three_algorithms(test,goal):
     #Runs Test() on uniform cost search, A* with missing square heuristic, and A* with manhattan distance
@@ -224,7 +226,7 @@ def test_three_algorithms(test,goal):
     print(*results_manhattan[0])
     print(*results_both[0])
     
-    return (results_uniform[1],results_missing[1],results_manhattan[1])
+    return ((results_uniform[1],results_missing[1],results_manhattan[1]))
 
 def get_array():
     #Gets a test from the user
@@ -261,15 +263,47 @@ test5 = [[1,6,7],[5,9,3],[4,8,2]]
 test6 = [[7,1,2],[4,8,5],[6,3,9]]
 test7 = [[9,7,2],[4,6,1],[3,5,8]]
 
+#Input of custom test
 print("This program has no input validation")
-if input("Would you like to run custom puzzle tests? (Y/N) ").lower() == "y":
+if 0: #input("Would you like to run custom puzzle tests? (Y/N) ").lower() == "y":
     testn = get_array()
     if input("Custom goal state? (Y/N) ").lower() == "y":
-        goaln = get_array()
+        goal = get_array()
     else:
-        goaln = generate_goal(len(testn))
+        goal = generate_goal(len(testn))
+    test_three_algorithms(testn,goal)
 else:
-    testn = test7
-    goaln = goal_state
+    test_arr = [test0,test1,test2,test3,test4,test5,test6,test7]
+    goal = goal_state
 
-test_three_algorithms(testn,goaln)
+
+tests = [0,2,4,8,12,16,20,24]
+nodes_expanded = []
+time_elapsed = []
+max_queue = []
+for test in test_arr:
+    results = test_three_algorithms(test,goal)
+    nodes_expanded.append([results[0][3],results[1][3],results[2][3]])
+    time_elapsed.append([results[0][0],results[1][0],results[2][0]])
+    max_queue.append([results[0][2],results[1][2],results[2][2]])
+
+data = np.array(nodes_expanded)
+
+fig, (ax1,ax2) = plt.subplots(2)
+fig.tight_layout(pad = 2)
+fig.suptitle("Performance of Algorithms vs Problem Depth")
+ax1.plot(tests,data[:,0],label = "Uniform Cost Search")
+ax1.plot(tests,data[:,1],label = "A* Missing Tiles Heuristic")
+ax1.plot(tests,data[:,2],label = "A* Manhattan Distance")
+ax1.legend(loc='upper left')
+ax1.set(xlabel="Depth of solution",ylabel="Nodes Expanded")
+ax1.set_yticklabels(['{:,}'.format(int(x)) for x in ax1.get_yticks().tolist()])
+
+data = np.array(max_queue)
+ax2.plot(tests,data[:,0],label = "Uniform Cost Search")
+ax2.plot(tests,data[:,1],label = "A* Missing Tiles Heuristic")
+ax2.plot(tests,data[:,2],label = "A* Manhattan Distance")
+ax2.set(xlabel="Depth of Solution",ylabel="Max Queue Size")
+ax2.set_yticklabels(['{:,}'.format(int(x)) for x in ax2.get_yticks().tolist()])
+
+plt.show()
