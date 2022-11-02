@@ -1,0 +1,177 @@
+Welcome to my 8-puzzle solver
+Would you like to run custom puzzle tests? (Y/N) N
+
+Uniform cost:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  0
+Max Queue Size:  1
+Nodes Expanded:  1
+
+A* missing squares:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  0
+Max Queue Size:  1
+Nodes Expanded:  1
+
+A* manhattan:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  0
+Max Queue Size:  1
+Nodes Expanded:  1
+
+
+Uniform cost:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  2
+Max Queue Size:  6
+Nodes Expanded:  6
+
+A* missing squares:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  2
+Max Queue Size:  3
+Nodes Expanded:  3
+
+A* manhattan:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  2
+Max Queue Size:  3
+Nodes Expanded:  3
+
+
+Uniform cost:
+ Solution Found
+Time elapsed(s):  0.001
+Depth:  4
+Max Queue Size:  18
+Nodes Expanded:  23
+
+A* missing squares:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  4
+Max Queue Size:  6
+Nodes Expanded:  5
+
+A* manhattan:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  4
+Max Queue Size:  6
+Nodes Expanded:  5
+
+
+Uniform cost:
+ Solution Found
+Time elapsed(s):  0.011
+Depth:  8
+Max Queue Size:  180
+Nodes Expanded:  297
+
+A* missing squares:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  8
+Max Queue Size:  16
+Nodes Expanded:  19
+
+A* manhattan:
+ Solution Found
+Time elapsed(s):  0.0
+Depth:  8
+Max Queue Size:  12
+Nodes Expanded:  13
+
+
+Uniform cost:
+ Solution Found
+Time elapsed(s):  0.082
+Depth:  12
+Max Queue Size:  1133
+Nodes Expanded:  1886
+
+A* missing squares:
+ Solution Found
+Time elapsed(s):  0.009
+Depth:  12
+Max Queue Size:  84
+Nodes Expanded:  120
+
+A* manhattan:
+ Solution Found
+Time elapsed(s):  0.002
+Depth:  12
+Max Queue Size:  28
+Nodes Expanded:  37
+
+
+Uniform cost:
+ Solution Found
+Time elapsed(s):  0.7
+Depth:  16
+Max Queue Size:  6596
+Nodes Expanded:  13443
+
+A* missing squares:
+ Solution Found
+Time elapsed(s):  0.029
+Depth:  16
+Max Queue Size:  414
+Nodes Expanded:  666
+
+A* manhattan:
+ Solution Found
+Time elapsed(s):  0.005
+Depth:  16
+Max Queue Size:  63
+Nodes Expanded:  96
+
+
+Uniform cost:
+ Solution Found
+Time elapsed(s):  2.424
+Depth:  20
+Max Queue Size:  17894
+Nodes Expanded:  52841
+
+A* missing squares:
+ Solution Found
+Time elapsed(s):  0.131
+Depth:  20
+Max Queue Size:  1832
+Nodes Expanded:  3146
+
+A* manhattan:
+ Solution Found
+Time elapsed(s):  0.019
+Depth:  20
+Max Queue Size:  305
+Nodes Expanded:  503
+
+
+Uniform cost:
+ Solution Found
+Time elapsed(s):  7.647
+Depth:  24
+Max Queue Size:  24188
+Nodes Expanded:  119600
+
+A* missing squares:
+ Solution Found
+Time elapsed(s):  1.208
+Depth:  24
+Max Queue Size:  8717
+Nodes Expanded:  17769
+
+A* manhattan:
+ Solution Found
+Time elapsed(s):  0.104
+Depth:  24
+Max Queue Size:  967
+Nodes Expanded:  1758
